@@ -45,19 +45,18 @@ klasifikasi%>%
 dataNA2<-apply(newclass,1,function(x){any(is.na(x))})
 sum(dataNA2)
 classdf<-data.frame(newclass[!dataNA2,])
-classdf
+View (classdf)
 sapply(classdf, class)
 
-#mengubah tipe data variabel pclass dan survived ke faktor
+#mengubah tipe data variabel ke faktor
 JobSatisfication= factor(classdf$JobSatisfaction)
 Education=factor(classdf$Education)
 EnvironmentSatisfaction=factor(classdf$EnvironmentSatisfaction)
 JobInvolvement=factor(classdf$JobInvolvement)
 JobLevel=factor(classdf$JobLevel)
 
-#membuat variabel yg dikerjakan untuk menentukan target(survived)
-#setelah dibuat dalam suatu objek, maka kolom sex menjadi notasi angka
-#yaitu 2 untuk female, dan 3 untuk male
+
+#membuat variabel yg dikerjakan untuk menentukan target(Job Satisfaction)
 factor<-data.frame(age=classdf$ï..Age,
                    daily=classdf$DailyRate,
                    hour= classdf$HourlyRate,
@@ -67,11 +66,11 @@ factor
 dim(factor)
 
 #faktorcbind
-factor1<-cbind(faktor$age,
-               faktor$daily,
-               faktor$hour,
-               faktor$monthlyin,
-               faktor$monthlyrate)
+factor1<-cbind(factor$age,
+               factor$daily,
+               factor$hour,
+               factor$monthlyin,
+               factor$monthlyrate)
 factor1
 #definisi target
 target<-(JobSatisfication)
