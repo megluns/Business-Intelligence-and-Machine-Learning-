@@ -1,0 +1,62 @@
+ #Packages
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("readr")
+library(readr)
+install.packages("magrittr")
+library(magrittr)
+install.packages("dplyr")
+library(dplyr)
+install.packages("reshape2")
+library(reshape2)
+
+#input data
+online<- read.csv("D:\\^^SMT 5\\BIML\\uts\\online_retail.csv")
+customer=online[!(online$StockCode==" "),] 
+customer
+
+jumlah<-customer %>% group_by(customer$Country)%>%summarise(n=n())%>%ungroup()%>%arrange()
+jumlah
+
+table(online$Country)
+
+install.packages("lubridate")
+library(lubridate)
+Max_week_sale <- filter(customer, !is.na(CustomerID),!is.na(StockCode))
+Max_week_sale$InvoiceDate=mdy_hm(Max_week_sale$InvoiceDate)
+Max_week_sale$Weekdays <- weekdays(Max_week_sale$InvoiceDate)
+Max_week_sale$Sales <- Max_week_sale$Quantity*Max_week_sale$UnitPrice
+highsales <- Max_week_sale %>% group_by(Max_week_sale$Weekdays) %>% summarize(SalesAmount=sum(Sales)) %>% arrange(desc(SalesAmount))
+head(highsales)
+
+repeatcustomers<-customer%>%group_by((CustomerID),n_distinct(InvoiceDate))%>%summarise(Count=n())%>%ungroup()%>%arrange()
+repeatcustomers
+
+
+#Which products bring most revenue?
+revenue<-customer%>%group_by(customer$StockCode)%>%summarise(sales=sum(Quantity*UnitPrice))%>%ungroup()%>%arrange(desc(sales))
+revenue
+
+# To create new variable Sales_Amount along with all variables. 
+Sales_Detail<-customer %>% mutate(Sales_Amount = Quantity*UnitPrice)
+
+# Removed Sales_Amout where values are coming na
+sales<-Sales_Detail%>% filter(!is.na(Sales_Amount))
+
+#To be found maximum Sales Amount countrywise
+sales %>%group_by(Country)%>% summarise(SalesAmount =sum(Sales_Amount)) %>%arrange(desc(SalesAmount))
+
+#Can you find out which hours are most crowded and, therefore, need more staff?
+Max_week_sale$hours_sale <- hour(Max_week_sale$InvoiceDate)
+Peakhour <- Max_week_sale %>% group_by(Max_week_sale$hours_sale) %>% summarise(Hour_sales=sum(hours_sale)) %>% arrange(desc(Hour_sales))
+head(Peakhour)
+Peakhour
+plot (Peakhour)
+
+#Create a table of month wise total sales.
+Max_week_sale$Month<-month(Max_week_sale$InvoiceDate)
+a=Max_week_sale %>% group_by(Month) %>% summarise(sales_month=sum(Sales))
+plot(a)
+
+#Who are the top 10 customers which purchase most?
+Max_week_sale %>% group_by(CustomerID) %>% summarise(Spend=sum(Sales)) %>% arrange(desc(Spend)) %>%head(10)
