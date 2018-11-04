@@ -1,0 +1,102 @@
+######### CLASSIFICATION WITH K- NEAREST NEIGHBOR###########
+#tidak menggunakan plot 
+
+#Mengaktifkan package
+install.packages("dbscan")
+library(dbscan)
+install.packages("dplyr")
+library(dplyr)
+install.packages("class")
+library(class)
+
+#memasukkan data csv
+klasifikasi<-read.csv("D:\\^^SMT 5\\BIML\\uts\\Classification.csv")
+View(klasifikasi)
+
+#melihat objek apa saja pada data tersebut
+objects(klasifikasi)
+
+#menghitung NA
+dataNA<-apply(klasifikasi,1,function(x){any(is.na(x))})
+sum(dataNA)
+
+#membuat dataframe variabel yg dibutuhkan untuk analisis, 
+klasifikasi%>%
+  select( JobSatisfaction,
+          ï..Age,
+          Attrition,
+          BusinessTravel,
+          DailyRate,
+          Department,
+          DistanceFromHome,
+          Education,
+          EducationField,
+          EmployeeCount,
+          EnvironmentSatisfaction,
+          Gender,
+          HourlyRate,
+          JobInvolvement,
+          JobLevel,
+          JobRole,
+          MaritalStatus,
+          MonthlyIncome,
+          MonthlyRate)%>%
+  data.frame()->newclass
+dataNA2<-apply(newclass,1,function(x){any(is.na(x))})
+sum(dataNA2)
+classdf<-data.frame(newclass[!dataNA2,])
+classdf
+sapply(classdf, class)
+
+#mengubah tipe data variabel pclass dan survived ke faktor
+JobSatisfication= factor(classdf$JobSatisfaction)
+Education=factor(classdf$Education)
+EnvironmentSatisfaction=factor(classdf$EnvironmentSatisfaction)
+JobInvolvement=factor(classdf$JobInvolvement)
+JobLevel=factor(classdf$JobLevel)
+
+#membuat variabel yg dikerjakan untuk menentukan target(survived)
+#setelah dibuat dalam suatu objek, maka kolom sex menjadi notasi angka
+#yaitu 2 untuk female, dan 3 untuk male
+factor<-data.frame(age=classdf$ï..Age,
+                   daily=classdf$DailyRate,
+                   hour= classdf$HourlyRate,
+                   monthlyin=classdf$MonthlyIncome,
+                   monthlyrate=classdf$MonthlyRate)
+factor
+dim(factor)
+
+#faktorcbind
+factor1<-cbind(faktor$age,
+               faktor$daily,
+               faktor$hour,
+               faktor$monthlyin,
+               faktor$monthlyrate)
+factor1
+#definisi target
+target<-(JobSatisfication)
+target
+class(target)
+dim(target)
+
+#No=1
+#Travel rarely= 3
+#sales= 3
+#medical = 4
+#male= 2
+#Research scientist= 7
+#single= 3
+####JONI####
+joni<-cbind(35,1373,50,3000,5000)
+joni
+
+#Mencari Job Satisfaction Joni
+result<-knn(factor1,joni,target,k=12,prob = TRUE)
+result
+
+result1<-knn(factor1,joni,target,k=9,prob = TRUE)
+result1
+
+result2<-knn(factor1,joni,target,k=1,prob = TRUE)
+result2
+
