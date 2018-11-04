@@ -15,8 +15,9 @@ online<- read.csv("D:\\^^SMT 5\\BIML\\uts\\online_retail.csv")
 customer=online[!(online$StockCode==" "),] 
 customer
 
-#dimensi data 
+#dimensi dan variabel data 
 dim(customer)
+str(customer)
 
 #customers by country
 jumlah<-customer %>% group_by(customer$Country)%>%summarise(n=n())%>%ungroup()%>%arrange()
